@@ -25,7 +25,7 @@ class TooltipElement extends HTMLElement {
         if (text == null) {
             throw new Error("The required property [text] is undefined.");
         }
-
+        
         const align = this.getAttribute("alignment") || "auto";
         if (align != Alignment.AUTO
          && align != Alignment.CENTER
