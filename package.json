@@ -1,0 +1,26 @@
+{
+  "name": "web-tooltip",
+  "version": "1.0.0",
+  "description": "This package allows easy and light implementation of tooltip in web environment.",
+  "main": "js/index.js",
+  "author": "Dev Ttangkong",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "homepage": "https://github.com/MTtankkeo/web_tooltip",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MTtankkeo/web_tooltip.git"
+  },
+  "bugs": {
+    "url": "https://github.com/MTtankkeo/web_tooltip/issues"
+  },
+  "keywords": [
+    "tooltip",
+    "hover-alt"
+  ],
+  "license": "MIT"
+}
