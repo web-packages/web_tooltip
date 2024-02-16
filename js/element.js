@@ -19,10 +19,10 @@ class TooltipElement extends HTMLElement {
             case "this": return this;
             case "parent": return this.parentElement;
             default:
-                throw new Error("...");
+                throw new Error("Cannot convert the given scope name to html element.");
         }
     }
-
+    
     /**
      * @param {string} text 
      * @param {string} alignment 

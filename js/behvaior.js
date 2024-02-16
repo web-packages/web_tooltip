@@ -6,11 +6,21 @@ class TooltipBehvaior {
         }
     }
 
-    align() {
+    /**
+     * @param {DOMRect} constraint 
+     * @param {DOMRect} ract 
+     */
+    align(constraint, ract) {
         throw new Error("align() is not implemented.");
     }
 
     handleOverflow() {
+        throw new Error("handleOverflow() is not implemented.");
+    }
+}
 
+class CenterTooltipBehvaior extends TooltipBehvaior {
+    align() {
+        
     }
 }
