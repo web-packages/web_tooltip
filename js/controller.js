@@ -34,7 +34,7 @@ export function isTooltipAlignment(value) {
 }
 
 export class TooltipController {
-    /** @param {HTMLElement} element  */
+    /** @param {HTMLElement} element */
     set current(element) {
         this._current = element;
     }
@@ -45,11 +45,13 @@ export class TooltipController {
     /**
      * @param {HTMLElement} element 
      * @param {string} alignment
+     * @param {HTMLElement} target
      * @param {HTMLElement} parent
     */
     static show(
         element,
         alignment = "auto",
+        target,
         parent = document.getElementsByTagName("body")[0]
     ) {
         if (element == null) {
@@ -58,10 +60,25 @@ export class TooltipController {
         if (!isTooltipAlignment(alignment)) {
             throw new Error("the required parameter [alignment] is not correctly defined. (refer to [TooltipAlignment] for details)");
         }
-        if (parent == null) {
-            throw new Error("The required parameter [parent] is undefined.");
+        if (target == null) throw new Error("The required parameter [target] is undefined.");
+        if (parent == null) throw new Error("The required parameter [parent] is undefined.");
+
+        // The position property of the parent element is must be define to 'relative',
+        // because the tooltip element is positioned as 'absolute'.
+        {
+            parent.style.position  = "relative";
+            element.style.position = "absolute";
         }
 
-        this.current = element;
+        target.onpointerleave = () => {
+            this.unshow(element);
+        }
+
+        parent.appendChild(this.current = element);
+    }
+
+    /** @param {HTMLElement} element  */
+    static unshow(element = this.current) {
+        element.remove();
     }
 }

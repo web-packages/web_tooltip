@@ -10,6 +10,31 @@ class TooltipElement extends HTMLElement {
     }
 
     /**
+     * @param {string} scope 
+     * @returns {HTMLElement | undefined}
+     */
+    parent(scope) {
+        switch (scope) {
+            case "body": return undefined;
+            case "this": return this;
+            case "parent": return this.parentElement;
+            default:
+                throw new Error("...");
+        }
+    }
+
+    /**
+     * @param {string} text 
+     * @param {string} alignment 
+     */
+    show(text, alignment) {
+        const scope  = this.getAttribute("scope") || "body";
+        const parent = this.parent(scope);
+
+        TooltipController.show(this.createTooltipElement(text), alignment, this, parent);
+    }
+
+    /**
      * @param {string} text
      * @param {string} alignment
      * @param {number} delay - time
@@ -18,7 +43,7 @@ class TooltipElement extends HTMLElement {
         this.onpointerleave = () => clearTimeout(this.delayTimer);
 
         this.delayTimer = setTimeout(() => {
-            TooltipController.show(this.createTooltipElement(text), alignment);
+            this.show(text, alignment);
         }, delay);
     }
 
@@ -42,6 +67,13 @@ class TooltipElement extends HTMLElement {
             throw new Error("The automatic property [alignment] is not correctly defined. (refer to [TooltipAlignment] for details)");
         }
 
+        const scope = this.getAttribute("scope") || "body";
+        if (scope != "body"
+         && scope != "this"
+         && scope != "parent") {
+            throw new Error("The property [scope] is not correctly defined. {body, this, parent}");
+        }
+        
         const delay = this.getPropertyValue("--tooltip-delay") || "0.1s";
         const delayValue = delay.endsWith("ms")
             ? Number.parseFloat(delay)

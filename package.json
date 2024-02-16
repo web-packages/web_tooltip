@@ -1,7 +1,7 @@
 {
   "name": "web-tooltip",
   "version": "1.0.0",
-  "description": "This package allows easy and light implementation of tooltip in web environment.",
+  "description": "This package allows easy and light implementation of high-quality tooltip in web environment.",
   "main": "js/index.js",
   "author": "Dev Ttangkong",
   "directories": {
