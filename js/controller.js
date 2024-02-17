@@ -1,15 +1,19 @@
+import { CenterTooltipBehvaior, TooltipBehvaior } from "./behvaior.js";
 
+/// The relative position of tooltips in target.
 export const TooltipAlignment = {
-    AUTO:        "auto",
-    CENTER:      "center",
-    TOP:         "top",
-    TOPLEFT:     "top_left",
-    TOPRIGHT:    "top_right",
-    BOTTOM:      "bottom",
-    BOTTOMLEFT:  "bottom_left",
-    BOTTOMRIGHT: "bottom_right",
-    LEFT:        "left",
-    RIGHT:       "right",
+    AUTO:          "auto",
+    TOP:           "top",           // only vertical
+    TOP_LEFT:      "top_left",
+    TOP_RIGHT:     "top_right",
+    TOP_CENTER:    "top_center",
+    BOTTOM:        "bottom",
+    BOTTOM_LEFT:   "bottom_left",
+    BOTTOM_RIGHT:  "bottom_right",
+    BOTTOM_CENTER: "bottom_center",
+    LEFT:          "left",          // only horizontal
+    RIGHT:         "right",         // only horizontal
+    CENTER:        "center",        // only horizontal
 }
 
 /**
@@ -18,19 +22,29 @@ export const TooltipAlignment = {
  */
 export function isTooltipAlignment(value) {
     if (value != TooltipAlignment.AUTO
-     && value != TooltipAlignment.CENTER
      && value != TooltipAlignment.TOP
-     && value != TooltipAlignment.TOPLEFT
-     && value != TooltipAlignment.TOPRIGHT
+     && value != TooltipAlignment.TOP_LEFT
+     && value != TooltipAlignment.TOP_RIGHT
+     && value != TooltipAlignment.TOP_CENTER
      && value != TooltipAlignment.BOTTOM
-     && value != TooltipAlignment.BOTTOMLEFT
-     && value != TooltipAlignment.BOTTOMRIGHT
+     && value != TooltipAlignment.BOTTOM_LEFT
+     && value != TooltipAlignment.BOTTOM_RIGHT
+     && value != TooltipAlignment.BOTTOM_CENTER
      && value != TooltipAlignment.LEFT
-     && value != TooltipAlignment.RIGHT) {
+     && value != TooltipAlignment.RIGHT
+     && value != TooltipAlignment.CENTER) {
         return false;
     } else {
         return true;
     }
+}
+
+/**
+ * @param {string} alignment - refer to [TooltipAlignment].
+ * @returns {TooltipBehvaior}
+*/
+export function CreateTooltipBehvaior(alignment) {
+    return new CenterTooltipBehvaior();
 }
 
 export class TooltipController {
@@ -41,6 +55,29 @@ export class TooltipController {
 
     /** @returns {HTMLElement} */
     get current() { return this._current};
+
+    /**
+     * @param {HTMLElement} element - tooltip element.
+     * @param {HTMLElement} target
+     * @param {HTMLElement} parent - parent element of tooltip element.
+     * @param {string} alignment - refer to [TooltipAlignment].
+     */
+    static layout(
+        element = this.current,
+        target,
+        parent,
+        alignment,
+    ) {
+        const behvaior = CreateTooltipBehvaior(alignment);
+        const position = behvaior.align(
+            parent.getBoundingClientRect(),
+            target.getBoundingClientRect(),
+            element.getBoundingClientRect(),
+        );
+
+        element.style.left = `${position.left}px`;
+        element.style.top  = `${position.top}px`;
+    }
 
     /**
      * @param {HTMLElement} element 
@@ -56,7 +93,7 @@ export class TooltipController {
     ) {
         if (element == null) {
             throw new Error("the required parameter [element] is undefined.");
-        }
+        } 
         if (!isTooltipAlignment(alignment)) {
             throw new Error("the required parameter [alignment] is not correctly defined. (refer to [TooltipAlignment] for details)");
         }
@@ -70,15 +107,22 @@ export class TooltipController {
             element.style.position = "absolute";
         }
 
-        target.onpointerleave = () => {
-            this.unshow(element);
+        target.onpointerleave = () => this.unshow(element);
+
+        // layout the tooltip element.
+        {
+            parent.appendChild(this.current = element);
+            
+            // The elements are attached to the tree and then reposition.
+            this.layout(element, target, parent, alignment);
         }
 
-        parent.appendChild(this.current = element);
+        element.style.animation = "tooltip-fadein var(--tooltip-fadein-duration)";
     }
 
     /** @param {HTMLElement} element  */
     static unshow(element = this.current) {
-        element.remove();
+        element.style.animation = "tooltip-fadeout var(--tooltip-fadeout-duration)";
+        element.onanimationend = () => element.remove();
     }
 }

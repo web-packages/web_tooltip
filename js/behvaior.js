@@ -1,5 +1,5 @@
 
-class TooltipBehvaior {
+export class TooltipBehvaior {
     constructor() {
         if (this.constructor === TooltipBehvaior) {
             throw new Error("The abstract class cannot invoke constructor.");
@@ -7,10 +7,14 @@ class TooltipBehvaior {
     }
 
     /**
-     * @param {DOMRect} constraint 
-     * @param {DOMRect} ract 
+     * Returns the relative position that must be finally layouted.
+     * 
+     * @param {DOMRect} constraint
+     * @param {DOMRect} target
+     * @param {DOMRect} ract
+     * @returns {{left: number, top: number}}
      */
-    align(constraint, ract) {
+    align(constraint, target, ract) {
         throw new Error("align() is not implemented.");
     }
 
@@ -19,8 +23,8 @@ class TooltipBehvaior {
     }
 }
 
-class CenterTooltipBehvaior extends TooltipBehvaior {
+export class CenterTooltipBehvaior extends TooltipBehvaior {
     align() {
-        
+        return {left: 500, top: 0};
     }
 }
