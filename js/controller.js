@@ -75,12 +75,12 @@ export class TooltipController {
             element.getBoundingClientRect(),
         );
 
-        element.style.left = `${position.left}px`;
-        element.style.top  = `${position.top}px`;
+        element.style.left = `${position.x}px`;
+        element.style.top  = `${position.y}px`;
     }
 
     /**
-     * @param {HTMLElement} element 
+     * @param {HTMLElement} element
      * @param {string} alignment
      * @param {HTMLElement} target
      * @param {HTMLElement} parent
@@ -100,24 +100,34 @@ export class TooltipController {
         if (target == null) throw new Error("The required parameter [target] is undefined.");
         if (parent == null) throw new Error("The required parameter [parent] is undefined.");
 
+        /** @type {HTMLElement} */
+        let tooltip;
+
+        // The position property may overlap, therefore must be wrap to <div> once.
+        {
+            tooltip = document.createElement("div");
+            tooltip.appendChild(element);
+        }
+
         // The position property of the parent element is must be define to 'relative',
         // because the tooltip element is positioned as 'absolute'.
         {
             parent.style.position  = "relative";
-            element.style.position = "absolute";
+            tooltip.style.position = "absolute";
+            tooltip.style.minWidth = "min-content";
         }
 
         target.onpointerleave = () => this.unshow(element);
 
         // layout the tooltip element.
         {
-            parent.appendChild(this.current = element);
+            parent.appendChild(this.current = tooltip);
             
-            // The elements are attached to the tree and then reposition.
-            this.layout(element, target, parent, alignment);
+            // The tooltip element are attached to the parent tree and then reposition.
+            this.layout(tooltip, target, parent, alignment);
         }
 
-        element.style.animation = "tooltip-fadein var(--tooltip-fadein-duration)";
+        tooltip.style.animation = "tooltip-fadein var(--tooltip-fadein-duration)";
     }
 
     /** @param {HTMLElement} element  */

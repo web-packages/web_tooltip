@@ -49,7 +49,7 @@ class TooltipElement extends HTMLElement {
 
     /** @param {string} text  */
     createTooltipElement(text) {
-        const element = document.createElement("p");
+        const element = document.createElement("div");
         element.textContent = text;
         element.className = "tooltip";
 
