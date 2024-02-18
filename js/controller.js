@@ -1,4 +1,4 @@
-import { CenterTooltipBehvaior, TooltipBehvaior } from "./behvaior.js";
+import { CenterTooltipBehavior, TooltipBehavior } from "./behvaior.js";
 
 /// The relative position of tooltips in target.
 export const TooltipAlignment = {
@@ -41,10 +41,10 @@ export function isTooltipAlignment(value) {
 
 /**
  * @param {string} alignment - refer to [TooltipAlignment].
- * @returns {TooltipBehvaior}
+ * @returns {TooltipBehavior}
 */
 export function CreateTooltipBehvaior(alignment) {
-    return new CenterTooltipBehvaior();
+    return new CenterTooltipBehavior();
 }
 
 export class TooltipController {
@@ -68,15 +68,20 @@ export class TooltipController {
         parent,
         alignment,
     ) {
+        const constraint = parent.getBoundingClientRect();
+
         const behvaior = CreateTooltipBehvaior(alignment);
         const position = behvaior.align(
-            parent.getBoundingClientRect(),
+            constraint,
             target.getBoundingClientRect(),
             element.getBoundingClientRect(),
         );
+        const consumed = behvaior.overflowed(constraint, position);
 
-        element.style.left = `${position.x}px`;
-        element.style.top  = `${position.y}px`;
+        element.style.left = `${position.left + consumed.x}px`;
+        element.style.top  = `${position.top + consumed.y}px`;
+
+        console.log(consumed);
     }
 
     /**
@@ -114,7 +119,7 @@ export class TooltipController {
         {
             parent.style.position  = "relative";
             tooltip.style.position = "absolute";
-            tooltip.style.minWidth = "min-content";
+            tooltip.style.minWidth = "max-content";
         }
 
         target.onpointerleave = () => this.unshow(element);

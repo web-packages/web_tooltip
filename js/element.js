@@ -19,7 +19,12 @@ class TooltipElement extends HTMLElement {
             case "this": return this;
             case "parent": return this.parentElement;
             default:
-                throw new Error("Cannot convert the given scope name to html element.");
+                const element = document.querySelector(scope);
+                if (element == null) {
+                    throw new Error("The property [scope] is not correctly defined.");
+                } else {
+                    return element;
+                }
         }
     }
     
@@ -68,12 +73,7 @@ class TooltipElement extends HTMLElement {
         }
 
         const scope = this.getAttribute("scope") || "body";
-        if (scope != "body"
-         && scope != "this"
-         && scope != "parent") {
-            throw new Error("The property [scope] is not correctly defined. {body, this, parent}");
-        }
-        
+
         const delay = this.getPropertyValue("--tooltip-delay") || "0.1s";
         const delayValue = delay.endsWith("ms")
             ? Number.parseFloat(delay)
