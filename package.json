@@ -1,26 +1,28 @@
 {
-  "name": "web-tooltip",
+  "name": "web_tooltip",
   "version": "1.0.0",
   "description": "This package allows easy and light implementation of high-quality tooltip in web environment.",
-  "main": "js/index.js",
-  "author": "Dev Ttangkong",
-  "directories": {
-    "test": "test"
-  },
+  "main": "./dist/index.umd.js",
+  "module": "./dist/index.esm.js",
+  "types": "./dist/types",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "rollup -c",
+    "watch": "rollup -c -w"
   },
-  "homepage": "https://github.com/MTtankkeo/web_tooltip",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MTtankkeo/web_tooltip.git"
+    "url": "git+https://github.com/MTtankkeo/web_tooltip.git"
   },
+  "author": "Dev Ttangkong",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/MTtankkeo/web_tooltip/issues"
   },
-  "keywords": [
-    "tooltip",
-    "hover-alt"
-  ],
-  "license": "MIT"
+  "homepage": "https://github.com/MTtankkeo/web_tooltip#readme",
+  "devDependencies": {
+    "@rollup/plugin-terser": "^0.4.4",
+    "rollup": "^4.18.0",
+    "rollup-plugin-typescript2": "^0.36.0"
+  }
 }
